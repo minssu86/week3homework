@@ -107,18 +107,19 @@
                         let username = board['username'];
                         let contents = board['contents'];
                         let id = board['id'];
-                        addHTML(subject, username, contents, id);
+                        let createdAt = board['createdAt'];
+                        addHTML(subject, username, contents, id, createdAt);
                     }
                 }
             })
         }
 
-        function addHTML(subject, username, contents, id) {
-            let tempHtml = makeBoard(subject, username, contents, id);
+        function addHTML(subject, username, contents, id, createdAt) {
+            let tempHtml = makeBoard(subject, username, contents, id, createdAt);
             $('.mypost').append(tempHtml);
         }
 
-        function makeBoard(subject, username, contents, id) {
+        function makeBoard(subject, username, contents, id, createdAt) {
             return `<hr>
                     <div class="mypost2 mt-3">
                         <div class="form-floating mb-3 section1">
@@ -148,9 +149,14 @@
                                 <label for="contents">내용</label>
                             </div>
                             <div class="form-floating mt-3">
-                                 <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
-                                 <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
-                                 <button type="button" class="btn btn-dark" onclick="hideEdit(${id})">창닫기</button>
+                                <div>
+                                     <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
+                                     <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
+                                     <button type="button" class="btn btn-dark" onclick="hideEdit(${id})">창닫기</button>
+                                </div>
+                                <div>
+                                 <label id="time-${id}">${createdAt}</label>
+                                </div>
                             </div>
                         </div>
                     </div>`;
@@ -170,11 +176,8 @@
             let contents = $(`#contents-${id}`).val()
             let password = $(`#password-${id}`).val()
 
-            console.log(id);
             let data = {'subject': subject, 'username': username, 'contents': contents, 'password': password};
-            console.log(contents)
-            console.log(username)
-            console.log(password)
+
 
             $.ajax({
                 type: "PUT",
@@ -182,18 +185,22 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
-                    alert('메시지 변경에 성공하였습니다.');
+                    alert(response);
                     window.location.reload();
                 }
             });
         }
 
         function deleteOne(id) {
+            let password = $(`#password-${id}`).val()
+            let data = {'password': password};
             $.ajax({
                 type: "DELETE",
                 url: `/api/boards/${id}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
                 success: function (response) {
-                    alert('메시지 삭제에 성공하였습니다.');
+                    alert(response);
                     window.location.reload();
                 }
             })
