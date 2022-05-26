@@ -24,35 +24,31 @@ public class BoardController {
 //        return "index";
 //    }
 
+
+    // 게시글 작성
     @PostMapping("/api/boards")
-    public Board createBoard(@RequestBody BoardRequestDto requestDto) {   // @RequestBody 클라이언트가 보낸걸 넣어달라는 요청
-        Board board = new Board(requestDto);
-        return boardRepository.save(board);
+    public Board createBoard(@RequestBody BoardRequestDto requestDto) {
+        return boardService.createBoard(requestDto);
     }
 
+
+    // 게시글 불러오기
     @GetMapping("/api/boards")
     public List<Board> getBoard() {
-        return boardRepository.findAllByOrderByModifiedAtDesc();
+        return boardService.getBoards();
     }
 
+
+    // 게시글 삭제
     @DeleteMapping("/api/boards/{id}")
     public String deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
-        if(requestDto.getPassword().equals(board.getPassword())){
-            boardRepository.deleteById(id);
-            return "삭제 성공";
-        }
-        return "비밀번호가 맞지 않습니다";
+        return boardService.deleteBoard(id, requestDto);
     }
 
+    // 게시글 수정
     @PutMapping("/api/boards/{id}")
     public String  updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-        if(boardService.update(id, requestDto).equals(0L)){
-            return "비밀번호가 맞지 않습니다";
-        }
-        return "수정 성공";
+        return boardService.updateBoard(id, requestDto);
     }
 
 
