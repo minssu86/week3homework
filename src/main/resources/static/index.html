@@ -121,8 +121,8 @@
 
         function makeBoard(subject, username, contents, id, createdAt) {
             return `<hr>
-                    <div class="mypost2 mt-3">
-                        <div class="form-floating mb-3 section1">
+                    <div class="mypost2 mt-3 section1${id}">
+                        <div class="form-floating mb-3 section1 ">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="subject-${id}" placeholder="url" value="${subject}">
                                 <label for="subject">제목</label>
@@ -136,38 +136,53 @@
                                 <label for="password">비밀번호</label>
                             </div>
                             <div class="form-floating">
-                                <button type="button" class="btn btn-dark" onclick="showEdit(${id})">열기</button>
-                            </div>
-                        </div>
-                        <div id="section2-${id}" style="display: none" >
-                            <div>
-                                <input type="hidden" id="${id}" placeholder="url" value="${id}">
-                            </div>
-                            <div class="form-floating">
-                                <textarea class="form-control" placeholder="Leave a comment here" id="contents-${id}"
-                                  style="height: 100px">${contents}</textarea>
-                                <label for="contents">내용</label>
-                            </div>
-                            <div class="form-floating mt-3">
-                                <div>
-                                     <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
-                                     <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
-                                     <button type="button" class="btn btn-dark" onclick="hideEdit(${id})">창닫기</button>
-                                </div>
-                                <div>
-                                 <label id="time-${id}">${createdAt}</label>
-                                </div>
+                                <button type="button" class="btn btn-dark" onclick="showBoard(${id})">글보기</button>
                             </div>
                         </div>
                     </div>`;
         }
 
-        function showEdit(id){
-            $(`#section2-${id}`).css("display", "block");
+
+
+        function showBoard(id){
+            $.ajax({
+                type: "GET",
+                url: `/api/boards/board/${id}`,
+                data: {},
+                success: function (response) {
+                    let contents = response['contents'];
+                    let createdAt = response['createdAt'];
+                    let tempHtml =  `<div id="section2-${id}" >
+                                        <div>
+                                            <input type="hidden" id="${id}" placeholder="url" value="${id}">
+                                        </div>
+                                        <div className="form-floating">
+                                                <textarea className="form-control" placeholder="Leave a comment here"
+                                                          id="contents-${id}"
+                                                          style="height: 100px">${contents}</textarea>
+                                            <label htmlFor="contents">내용</label>
+                                        </div>
+                                        <div className="form-floating mt-3">
+                                            <div>
+                                                <img id="${id}-delete" className="icon-delete" src="images/delete.png" alt=""
+                                                     onClick="deleteOne('${id}')">
+                                                    <img id="${id}-submit" className="icon-end-edit" src="images/done.png" alt=""
+                                                         onClick="submitEdit('${id}')">
+                                                        <button type="button" className="btn btn-dark" onClick="hideEdit(${id})">창닫기
+                                                        </button>
+                                            </div>
+                                            <div>
+                                                <label id="time-${id}">${createdAt}</label>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                    $(`.section1${id}`).append(tempHtml);
+                }
+            });
         }
 
         function hideEdit(id){
-            $(`#section2-${id}`).css("display", "none");
+            $(`#section2-${id}`).remove();
         }
 
         function submitEdit(id) {

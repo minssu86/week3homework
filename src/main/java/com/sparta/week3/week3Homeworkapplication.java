@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication
-public class Week3homeworkApplication {
+public class week3Homeworkapplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Week3homeworkApplication.class, args);
+        SpringApplication.run(week3Homeworkapplication.class, args);
     }
 
 }

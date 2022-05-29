@@ -28,6 +28,13 @@ public class BoardService {
         return boardRepository.findAllByOrderByCreatedAtDesc();
     }
 
+    // DB로 부터 해당 게시글 불러오기
+    public Board getBoard(Long id) {
+        return boardRepository.findById(id).orElseThrow(
+                ()-> new NullPointerException("존재하지 않는 글입니다.")
+        );
+    }
+
     // 해당 게시글 삭제
     public String deleteBoard(Long id, BoardRequestDto requestDto) {
         if(requestDto.getPassword().equals(checkUserInfo(id).getPassword())){

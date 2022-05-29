@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 public class BoardController {
 
-    private final BoardRepository boardRepository;
     private final BoardService boardService;
 
 
@@ -32,10 +31,16 @@ public class BoardController {
     }
 
 
-    // 게시글 불러오기
+    // 게시글 목록 불러오기
     @GetMapping("/api/boards")
     public List<Board> getBoard() {
         return boardService.getBoards();
+    }
+
+    // 게시글 불러오기
+    @GetMapping("/api/boards/board/{id}")
+    public Board getBoard(@PathVariable Long id) {
+        return boardService.getBoard(id);
     }
 
 
