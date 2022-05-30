@@ -1,8 +1,8 @@
 package com.sparta.week3.service;
 
-import com.sparta.week3.domain.Board;
-import com.sparta.week3.domain.BoardRepository;
-import com.sparta.week3.domain.BoardRequestDto;
+import com.sparta.week3.model.Board;
+import com.sparta.week3.repository.BoardRepository;
+import com.sparta.week3.dto.BoardRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

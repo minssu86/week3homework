@@ -1,5 +1,6 @@
-package com.sparta.week3.domain;
+package com.sparta.week3.model;
 
+import com.sparta.week3.dto.BoardRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Board extends Timestamped{
+public class Board extends Timestamped {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id

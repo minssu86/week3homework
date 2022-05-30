@@ -1,9 +1,8 @@
 package com.sparta.week3.controller;
 
 
-import com.sparta.week3.domain.Board;
-import com.sparta.week3.domain.BoardRepository;
-import com.sparta.week3.domain.BoardRequestDto;
+import com.sparta.week3.model.Board;
+import com.sparta.week3.dto.BoardRequestDto;
 import com.sparta.week3.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +32,7 @@ public class BoardController {
 
     // 게시글 목록 불러오기
     @GetMapping("/api/boards")
-    public List<Board> getBoard() {
+    public List<Board> getBoards() {
         return boardService.getBoards();
     }
 

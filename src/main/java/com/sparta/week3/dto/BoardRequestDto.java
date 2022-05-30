@@ -1,4 +1,4 @@
-package com.sparta.week3.domain;
+package com.sparta.week3.dto;
 
 import lombok.Getter;
 
