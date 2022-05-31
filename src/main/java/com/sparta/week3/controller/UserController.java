@@ -7,6 +7,7 @@ import com.sparta.week3.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,10 +31,13 @@ public class UserController {
 
     // 회원 가입 요청 처리
     @PostMapping("/user/signup")
-    public String registerUser(SignupRequestDto requestDto){
-            userService.registerUser(requestDto);
-
-        return "redirect:/user/loginView";
+    public String registerUser(SignupRequestDto requestDto, Model model){
+        String result = userService.registerUser(requestDto);
+        if(result.equals("success")){
+            return "redirect:/user/loginView";
+        }
+        model.addAttribute("msg", result);
+        return "login";
     }
 
 
@@ -52,7 +56,5 @@ public class UserController {
 
         return new UserInfoDto(username);
     }
-
-
 
 }

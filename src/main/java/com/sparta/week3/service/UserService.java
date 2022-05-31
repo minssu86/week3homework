@@ -23,8 +23,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void registerUser(SignupRequestDto requestDto) {
-
+    public String registerUser(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
 
 
@@ -44,10 +43,16 @@ public class UserService {
         }
 
         // ID 중복 확인
-        Optional<User> usedId = userRepository.findByUsername(username);
-        if(usedId.isPresent()){    // return value != null;
-            throw new IllegalArgumentException("중복된 닉네임입니다.");
+        try {
+            Optional<User> usedId = userRepository.findByUsername(username);
+
+            if(usedId.isPresent()){    // return value != null;
+                throw new IllegalArgumentException("중복된 닉네임입니다.");
+            }
+        }catch (IllegalArgumentException e){
+            return "중복된 닉네임입니다.";
         }
+
 
 
         // 비밀번호 유효성 검사
@@ -68,5 +73,6 @@ public class UserService {
         User user = new User(username, password, email);
         userRepository.save(user);
 
+        return "success";
     }
 }
