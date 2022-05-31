@@ -16,38 +16,32 @@ public class Board extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
     private String subject;
 
     @Column(nullable = false)
     private String contents;
 
+    @Column(nullable = false)
+    private Long userId;
 
-    public Board(String username, String password, String subject, String contents) {
-        this.username = username;
-        this.password = password;
-        this.subject = subject;
-        this.contents = contents;
-    }
 
-    public Board(BoardRequestDto requestDto) {
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+//    public Board(String username, String subject, String contents) {
+//        this.username = username;
+//        this.subject = subject;
+//        this.contents = contents;
+//    }
+
+    public Board(Long userId, BoardRequestDto requestDto) {
         this.subject = requestDto.getSubject();
         this.contents = requestDto.getContents();
+        this.userId = userId;
     }
 
 
-    public void update(BoardRequestDto requestDto) {
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+    public void update(Long userId, BoardRequestDto requestDto) {
         this.subject = requestDto.getSubject();
         this.contents = requestDto.getContents();
+        this.userId = userId;
     }
 
 }

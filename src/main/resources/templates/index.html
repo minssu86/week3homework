@@ -73,14 +73,10 @@
 
         function writeBoard() {
             let subject = $('#subject').val();
-            let username = $('#username').val();
-            let password = $('#password').val();
             let contents = $('#contents').val();
 
             let data = {
                 'subject': subject,
-                'username': username,
-                'password': password,
                 'contents': contents
             };
 
@@ -105,25 +101,24 @@
                 url: "/api/boards",
                 data: {},
                 success: function (response) {
-                    console.log(response.length)
                     for (let i = 0; i < response.length; i++) {
                         let board = response[i];
                         let subject = board['subject'];
-                        let username = board['username'];
                         let contents = board['contents'];
+                        let username = board['userId'];
                         let id = board['id'];
-                        addHTML(subject, username, contents, id);
+                        addHTML(subject, contents, id, username);
                     }
                 }
             })
         }
 
-        function addHTML(subject, username, contents, id) {
-            let tempHtml = makeBoard(subject, username, contents, id);
+        function addHTML(subject, contents, id, username) {
+            let tempHtml = makeBoard(subject, contents, id, username);
             $('.mypost').append(tempHtml);
         }
 
-        function makeBoard(subject, username, contents, id) {
+        function makeBoard(subject, contents, id, username) {
             return `<hr>
                     <div class="mypost2 mt-3 section1${id}">
                         <div class="form-floating mb-3 section1 ">
@@ -132,12 +127,8 @@
                                 <label for="subject">제목</label>
                             </div>
                             <div class="form-floating" style="margin: 0 10px">
-                                <input type="text" class="form-control" id="username-${id}" placeholder="url" value="${username}">
+                                <input type="text" class="form-control" id="username-${id}" placeholder="url" value="${username}" readonly>
                                 <label for="username">이름</label>
-                            </div>
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="password-${id}" placeholder="url">
-                                <label for="password">비밀번호</label>
                             </div>
                             <div class="form-floating">
                                 <button type="button" class="btn btn-dark" onclick="showBoard(${id})">글보기</button>
@@ -145,7 +136,6 @@
                         </div>
                     </div>`;
         }
-
 
 
         function showBoard(id){
@@ -172,9 +162,13 @@
                                                      onClick="deleteOne('${id}')">
                                                     <img id="${id}-submit" className="icon-end-edit" src="images/done.png" alt=""
                                                          onClick="submitEdit('${id}')">
-                                                        <button type="button" className="btn btn-dark" onClick="hideEdit(${id})">창닫기
-                                                        </button>
-                                            </div>
+                                                    <button type="button" className="btn btn-dark" onClick="hideEdit(${id})">창닫기
+                                                    </button>
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control" id="comment-${id}" placeholder="url">
+                                                        <label for="comment">댓글</label><a onclick="insertComment(${id})">댓글입력</a>
+                                                    </div>
+                                                </div>
                                             <div>
                                                 <label id="time-${id}">${createdAt}</label>
                                             </div>
@@ -183,7 +177,72 @@
                     $(`.section1${id}`).append(tempHtml);
                 }
             });
+            $.ajax({
+                type: "GET",
+                url: `/api/comments/${id}`,
+                data: {},
+                success: function (response) {
+                    let tempHtml = ""
+                    let subjects = response;
+                    console.log(subjects)
+                    console.log("get")
+                    for(let i=0; i<subjects.length;i++){
+                        let subject = subjects[i]['subject']
+                        let commentId = subjects[i]['id']
+                        console.log(subject)
+                        tempHtml +=  `<div><input class="commentId-${commentId}" value="${subject}">
+                                            <a onclick="editComment(${commentId})">댓글수정</a>
+                                            <a onclick="deleteComment(${commentId})">댓글삭제</a>
+                                      </div>`;
+                    }
+                    $(`#section2-${id}`).append(tempHtml);
+                }
+            });
         }
+
+
+        function deleteComment(commentId) {
+            $.ajax({
+                type: "DELETE",
+                url: `/api/comments/${commentId}`,
+                contentType: "application/json",
+                success: function (response) {
+                    window.location.reload();
+                }
+            })
+        }
+
+
+        function editComment(commentId) {
+            let subject = $(`.commentId-${commentId}`).val()
+            let data = {'subject': subject};
+            $.ajax({
+                type: "PUT",
+                url: `/api/comments/${commentId}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    window.location.reload();
+                }
+            });
+        }
+
+        function insertComment(id) {
+            let subject = $(`#comment-${id}`).val()
+            console.log(subject)
+            let data = {'subject': subject};
+            $.ajax({
+                type: "POST",
+                url: `/api/comments/${id}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    window.location.reload();
+                }
+            });
+        }
+
+
 
         function hideEdit(id){
             $(`#section2-${id}`).remove();
@@ -191,13 +250,9 @@
 
         function submitEdit(id) {
             let subject = $(`#subject-${id}`).val()
-            let username = $(`#username-${id}`).val()
             let contents = $(`#contents-${id}`).val()
-            let password = $(`#password-${id}`).val()
 
-            let data = {'subject': subject, 'username': username, 'contents': contents, 'password': password};
-
-
+            let data = {'subject': subject, 'contents': contents};
             $.ajax({
                 type: "PUT",
                 url: `/api/boards/${id}`,
@@ -211,23 +266,20 @@
         }
 
         function deleteOne(id) {
-            let password = $(`#password-${id}`).val()
-            let data = {'password': password};
             $.ajax({
                 type: "DELETE",
                 url: `/api/boards/${id}`,
                 contentType: "application/json",
-                data: JSON.stringify(data),
                 success: function (response) {
                     alert(response);
                     window.location.reload();
                 }
             })
         }
-
-
     </script>
 </head>
+
+
 <body>
 <!--============ 소개 =============-->
 <div class="mypic">
@@ -238,7 +290,7 @@
     <form id="my_form" method="post" action="/user/logout">
         <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
     </form>
-    <a href="/user/loginView">로그인</a>
+    <a href="/user/loginView" style="font-size: 20px">로그인</a>
 </div>
 <!--============ 작성 란 =============-->
 <div class="mypost">
@@ -246,14 +298,6 @@
         <div class="form-floating">
             <input type="text" class="form-control" id="subject" placeholder="url">
             <label for="subject">제목</label>
-        </div>
-        <div class="form-floating" style="margin: 0 10px">
-            <input type="text" class="form-control" id="username" placeholder="url">
-            <label for="username">이름</label>
-        </div>
-        <div class="form-floating">
-            <input type="text" class="form-control" id="password" placeholder="url">
-            <label for="password">비밀번호</label>
         </div>
     </div>
 

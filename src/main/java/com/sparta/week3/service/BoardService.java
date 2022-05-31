@@ -18,8 +18,8 @@ public class BoardService {
 
 
     // 게시글 DB 저장
-    public Board createBoard(BoardRequestDto requestDto) {
-        Board board = new Board(requestDto);
+    public Board createBoard(Long userId, BoardRequestDto requestDto) {
+        Board board = new Board(userId, requestDto);
         return boardRepository.save(board);
     }
 
@@ -28,6 +28,7 @@ public class BoardService {
         return boardRepository.findAllByOrderByCreatedAtDesc();
     }
 
+
     // DB로 부터 해당 게시글 불러오기
     public Board getBoard(Long id) {
         return boardRepository.findById(id).orElseThrow(
@@ -35,34 +36,34 @@ public class BoardService {
         );
     }
 
+
     // 해당 게시글 삭제
-    public String deleteBoard(Long id, BoardRequestDto requestDto) {
-        if(requestDto.getPassword().equals(checkUserInfo(id).getPassword())){
+    public String deleteBoard(Long id, Long userId) {
+        if(userId.equals(checkUserInfo(id).getUserId())){
             boardRepository.deleteById(id);
             return "삭제 성공";
         }
-        return "비밀번호가 맞지 않습니다";
+        return "작성자만 삭제 가능합니다";
     }
 
 
     // 해당 게시글 수정
     @Transactional
-    public String updateBoard(Long id, BoardRequestDto requestDto) {
+    public String updateBoard(Long id, Long userId, BoardRequestDto requestDto) {
         Board board = checkUserInfo(id);
-        if(requestDto.getPassword().equals(board.getPassword())){
-            board.update(requestDto);
-            return "수정 상공";
+        if(userId.equals(checkUserInfo(id).getUserId())){
+            board.update(userId, requestDto);
+            return "수정 성공";
         }
-        return "비밀번호가 맞지 않습니다";
+        return "작성자만 수정 가능합니다";
     }
 
 
-    // 비밀 번호 확인
+    // 게시글 불러오기
     public Board checkUserInfo(Long id){
-        Board board = boardRepository.findById(id).orElseThrow(
+        return boardRepository.findById(id).orElseThrow(
                 () ->  new IllegalArgumentException("존재하지 않는 글입니다.")
         );
-        return board;
     }
 
 }

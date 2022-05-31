@@ -26,7 +26,7 @@ public class CommentController {
     }
 
     // 댓글 수정
-    @PutMapping("/api/comments/comment/{commentId}")
+    @PutMapping("/api/comments/{commentId}")
     public String updateComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto){
         Long userId = userDetails.getUser().getId();
         return commentService.updateComment(commentId, userId, requestDto);
@@ -34,7 +34,7 @@ public class CommentController {
 
 
     // 댓글 삭제
-    @DeleteMapping("api/comments/comment/{commentId}")
+    @DeleteMapping("api/comments/{commentId}")
     public String deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         Long userId = userDetails.getUser().getId();
         return commentService.deleteBoard(commentId, userId);

@@ -15,14 +15,15 @@ public class Comment extends Timestamped {
     @Id
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String subject;
 
-    @Column
+    @Column(nullable = false)
     private Long userId;
 
-    @Column
+    @Column(nullable = false)
     private Long boardId;
+
 
     public Comment(Long boardId, Long userId, CommentRequestDto requestDto){
         this.userId = userId;

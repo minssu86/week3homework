@@ -3,8 +3,10 @@ package com.sparta.week3.controller;
 
 import com.sparta.week3.model.Board;
 import com.sparta.week3.dto.BoardRequestDto;
+import com.sparta.week3.security.UserDetailsImpl;
 import com.sparta.week3.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +27,9 @@ public class BoardController {
 
     // 게시글 작성
     @PostMapping("/api/boards")
-    public Board createBoard(@RequestBody BoardRequestDto requestDto) {
-        return boardService.createBoard(requestDto);
+    public Board createBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BoardRequestDto requestDto) {
+        Long userId = userDetails.getUser().getId();
+        return boardService.createBoard(userId, requestDto);
     }
 
 
@@ -45,14 +48,16 @@ public class BoardController {
 
     // 게시글 삭제
     @DeleteMapping("/api/boards/{id}")
-    public String deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-        return boardService.deleteBoard(id, requestDto);
+    public String deleteBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = userDetails.getUser().getId();
+        return boardService.deleteBoard(id, userId);
     }
 
     // 게시글 수정
     @PutMapping("/api/boards/{id}")
-    public String  updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-        return boardService.updateBoard(id, requestDto);
+    public String  updateBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BoardRequestDto requestDto) {
+        Long userId = userDetails.getUser().getId();
+        return boardService.updateBoard(id, userId, requestDto);
     }
 
 
