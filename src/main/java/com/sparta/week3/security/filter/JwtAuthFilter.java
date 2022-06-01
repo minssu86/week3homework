@@ -41,6 +41,8 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
         String tokenPayload = request.getHeader("Authorization");
 //        String tokenPayload = request.getHeader("Authorization");
         if (tokenPayload == null) {
+//            response.setHeader("msg", "로그인이 필요합니다.");
+            response.setHeader("msg", "Login is required");
             response.sendRedirect("/user/loginView");
             return null;
         }

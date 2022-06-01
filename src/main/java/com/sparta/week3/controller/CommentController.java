@@ -20,8 +20,12 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping("/api/comments/{id}")   // id = boardId
-    public List<Comment> createComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto){
+    public String createComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto){
         Long userId = userDetails.getUser().getId();
+//        System.out.println(userId);
+//        if(userId == null){
+//            return "로그인이 필요한 기능입니다.";
+//        }
         return  commentService.createComment(id, userId, requestDto);
     }
 
@@ -46,5 +50,8 @@ public class CommentController {
     public List<Comment> getComments(@PathVariable Long id){
         return commentService.getComments(id);
     }
+
+
+
 
 }

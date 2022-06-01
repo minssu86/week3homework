@@ -15,11 +15,14 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    // 댓글 생성 후 리스트 반환
-    public List<Comment> createComment(Long boardId, Long userId, CommentRequestDto requestDto) {
+    // 댓글 생성
+    public String createComment(Long boardId, Long userId, CommentRequestDto requestDto) {
+        if(requestDto.getSubject().length()<1){
+            return "댓글 내용을 입력해주세요";
+        }
         Comment comment = new Comment(boardId, userId, requestDto);
         commentRepository.save(comment);
-        return  getComments(boardId);
+        return  "success";
     }
 
 
@@ -44,6 +47,9 @@ public class CommentService {
         Comment comment = checkComment(id, userId);
         if(comment == null){
             throw new NullPointerException("해당 댓글이 없습니다");
+        }
+        if(requestDto.getSubject().length()<1){
+            return "댓글 내용을 입력해주세요";
         }
        comment.update(comment.getBoardId(), userId, requestDto);
         return "수정 완료 하였습니다.";

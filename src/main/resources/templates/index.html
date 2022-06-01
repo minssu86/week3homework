@@ -222,6 +222,7 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
+                    alert(response)
                     window.location.reload();
                 }
             });
@@ -229,14 +230,18 @@
 
         function insertComment(id) {
             let subject = $(`#comment-${id}`).val()
-            console.log(subject)
             let data = {'subject': subject};
+            alert("실행")
             $.ajax({
                 type: "POST",
                 url: `/api/comments/${id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
+                    alert(response.getResponseHeader("msg"))
+                    if(msg!=null){
+                        alert(msg)
+                    }
                     window.location.reload();
                 }
             });
