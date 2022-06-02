@@ -8,7 +8,7 @@
     <meta property="og:title" content="게시판"/>
     <meta property="og:description" content="영상 관련 코멘트 부탁합니다!"/>
     <meta property="og:image"
-          content="https://external-gmp1-1.xx.fbcdn.net/safe_image.php?d=AQGM5j9K5hZ1l46e&w=480&h=250&url=https%3A%2F%2Fi.ytimg.com%2Fvi%2Fb5-OH8awzRg%2Fhqdefault.jpg&cfs=1&sx=0&sy=36&sw=480&sh=250&ext=jpg&_nc_oe=6fd18&_nc_sid=632586&ccb=3-5&_nc_hash=AQFamRQhdgULDbH8"/>
+          content="https://user-images.githubusercontent.com/87007109/171564566-dc0a4658-efd1-4bfa-821c-114c25812597.png"/>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -32,7 +32,7 @@
             width: 100%;
             height: 300px;
 
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://external-gmp1-1.xx.fbcdn.net/safe_image.php?d=AQGM5j9K5hZ1l46e&w=480&h=250&url=https%3A%2F%2Fi.ytimg.com%2Fvi%2Fb5-OH8awzRg%2Fhqdefault.jpg&cfs=1&sx=0&sy=36&sw=480&sh=250&ext=jpg&_nc_oe=6fd18&_nc_sid=632586&ccb=3-5&_nc_hash=AQFamRQhdgULDbH8');
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://user-images.githubusercontent.com/87007109/171564566-dc0a4658-efd1-4bfa-821c-114c25812597.png');
             background-position: center 30%;
             background-size: cover;
 
@@ -66,10 +66,14 @@
     <script>
 
         $(document).ready(function () {
-            console.log("index js 시작")
             getBoard();
             $('.section2').hide();
+            loginCheck();
         });
+
+        function loginCheck(){
+
+        }
 
         function writeBoard() {
             let subject = $('#subject').val();
@@ -94,7 +98,6 @@
         }
 
         function getBoard() {
-            console.log("getBoard js 시작")
             $('.mypost2').empty();
             $.ajax({
                 type: "GET",
@@ -137,7 +140,6 @@
                     </div>`;
         }
 
-
         function showBoard(id){
             $.ajax({
                 type: "GET",
@@ -146,7 +148,7 @@
                 success: function (response) {
                     let contents = response['contents'];
                     let createdAt = response['createdAt'];
-                    let tempHtml =  `<div id="section2-${id}" >
+                    let tempHtml =  `<div id="section2-${id}">
                                         <div>
                                             <input type="hidden" id="${id}" placeholder="url" value="${id}">
                                         </div>
@@ -175,31 +177,28 @@
                                         </div>
                                     </div>`;
                     $(`.section1${id}`).append(tempHtml);
-                }
-            });
-            $.ajax({
-                type: "GET",
-                url: `/api/comments/${id}`,
-                data: {},
-                success: function (response) {
-                    let tempHtml = ""
-                    let subjects = response;
-                    console.log(subjects)
-                    console.log("get")
-                    for(let i=0; i<subjects.length;i++){
-                        let subject = subjects[i]['subject']
-                        let commentId = subjects[i]['id']
-                        console.log(subject)
-                        tempHtml +=  `<div><input class="commentId-${commentId}" value="${subject}">
+
+                    $.ajax({
+                        type: "GET",
+                        url: `/api/comments/${id}`,
+                        data: {},
+                        success: function (response) {
+                            let tempHtml = ""
+                            let subjects = response;
+                            for(let i=0; i<subjects.length;i++){
+                                let subject = subjects[i]['subject']
+                                let commentId = subjects[i]['id']
+                                tempHtml +=  `<div><input class="commentId-${commentId}" value="${subject}">
                                             <a onclick="editComment(${commentId})">댓글수정</a>
                                             <a onclick="deleteComment(${commentId})">댓글삭제</a>
                                       </div>`;
-                    }
-                    $(`#section2-${id}`).append(tempHtml);
+                            }
+                            $(`#section2-${id}`).append(tempHtml);
+                        }
+                    });
                 }
             });
         }
-
 
         function deleteComment(commentId) {
             $.ajax({
@@ -211,7 +210,6 @@
                 }
             })
         }
-
 
         function editComment(commentId) {
             let subject = $(`.commentId-${commentId}`).val()
@@ -238,16 +236,13 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
-                    alert(response.getResponseHeader("msg"))
-                    if(msg!=null){
-                        alert(msg)
-                    }
+                    // if(msg!=null){
+                    //     alert(msg)
+                    // }
                     window.location.reload();
                 }
             });
         }
-
-
 
         function hideEdit(id){
             $(`#section2-${id}`).remove();
@@ -292,10 +287,10 @@
     <div id="header-title-login-user">
         <span class="username"></span> 님 접속하셨습니다
     </div>
-    <form id="my_form" method="post" action="/user/logout">
-        <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
-    </form>
-    <a href="/user/loginView" style="font-size: 20px">로그인</a>
+<!--    <form id="my_form" method="post" action="/user/logout">-->
+<!--        <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>-->
+<!--    </form>-->
+<!--    <a href="/user/loginView" style="font-size: 20px">로그인</a>-->
 </div>
 <!--============ 작성 란 =============-->
 <div class="mypost">
